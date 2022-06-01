@@ -125,7 +125,7 @@ fn test_pixel_to_point() {
 /// to the upper-left and lower-right corners of the
 /// pixel buffer
 fn render(
-    pixel: &mut [u8],
+    pixels: &mut [u8],
     bounds: (usize, usize),
     upper_left: Complex<f64>,
     lower_right: Complex<f64>,
@@ -134,9 +134,9 @@ fn render(
 
     for row in 0..bounds.1 {
         for column in 0..bounds.0 {
-            let points = pixel_to_point(bounds, (column, row), upper_left, lower_right);
+            let point = pixel_to_point(bounds, (column, row), upper_left, lower_right);
             pixels[row * bounds.0 + column] = match escape_time(point, 255) {
-                None => None,
+                None => 0,
                 Some(count) => 255 - count as u8,
             }
         }
@@ -170,7 +170,7 @@ fn main() {
         std::process::exit(1);
     }
 
-    let bounds = parse_pair(&args[2], x).expect("error parsing image dimensions");
+    let bounds = parse_pair(&args[2], 'x').expect("error parsing image dimensions");
     let upper_left = parse_complex(&args[3]).expect("error parsin upper left corner point");
     let lower_right = parse_complex(&args[4]).expect("error parsin lower right corner point");
 
